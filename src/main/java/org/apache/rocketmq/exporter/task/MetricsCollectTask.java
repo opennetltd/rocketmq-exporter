@@ -29,15 +29,7 @@ import org.apache.rocketmq.common.admin.TopicOffset;
 import org.apache.rocketmq.common.admin.TopicStatsTable;
 import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.common.protocol.ResponseCode;
-import org.apache.rocketmq.common.protocol.body.BrokerStatsData;
-import org.apache.rocketmq.common.protocol.body.ClusterInfo;
-import org.apache.rocketmq.common.protocol.body.Connection;
-import org.apache.rocketmq.common.protocol.body.ConsumerConnection;
-import org.apache.rocketmq.common.protocol.body.GroupList;
-import org.apache.rocketmq.common.protocol.body.KVTable;
-import org.apache.rocketmq.common.protocol.body.ProducerInfo;
-import org.apache.rocketmq.common.protocol.body.ProducerTableInfo;
-import org.apache.rocketmq.common.protocol.body.TopicList;
+import org.apache.rocketmq.common.protocol.body.*;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.apache.rocketmq.common.protocol.route.BrokerData;
 import org.apache.rocketmq.common.protocol.route.TopicRouteData;
@@ -76,6 +68,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @Component
 public class MetricsCollectTask {
@@ -267,6 +260,25 @@ public class MetricsCollectTask {
             return;
         }
 
+        ClusterInfo clusterInfo = null;
+        try {
+            clusterInfo = mqAdminExt.examineBrokerClusterInfo();
+        } catch (Exception ex) {
+            log.error(String.format("collectBrokerStatsTopic-fetch cluster info exception, the address is %s",
+                    JSON.toJSONString(mqAdminExt.getNameServerAddressList())), ex);
+            return;
+        }
+
+        Set<String> subscriptionGroups = new HashSet<>();
+        for (BrokerData brokerData : clusterInfo.getBrokerAddrTable().values()) {
+            try {
+                SubscriptionGroupWrapper allSubscriptionGroup = mqAdminExt.getAllSubscriptionGroup(brokerData.selectBrokerAddr(), TimeUnit.MINUTES.toMillis(20));
+                subscriptionGroups.addAll(allSubscriptionGroup.getSubscriptionGroupTable().keySet());
+            } catch (Exception e) {
+                log.error("collect subscription group", e);
+            }
+        }
+
         Set<String> topicSet = topicList.getTopicList();
         for (String topic : topicSet) {
             GroupList groupList = null;
@@ -287,7 +299,10 @@ public class MetricsCollectTask {
                 continue;
             }
 
-            for (String group : groupList.getGroupList()) {
+            // Filter out deprecated/removed subscription group
+            List<String> groups = groupList.getGroupList().stream().filter(subscriptionGroups::contains).collect(Collectors.toList());
+
+            for (String group : groups) {
                 ConsumeStats consumeStats = null;
                 ConsumerConnection onlineConsumers = null;
                 long diff = 0L, totalConsumerOffset = 0L, totalBrokerOffset = 0L;
@@ -445,6 +460,16 @@ public class MetricsCollectTask {
             return;
         }
 
+        Set<String> subscriptionGroups = new HashSet<>();
+        for (BrokerData brokerData : clusterInfo.getBrokerAddrTable().values()) {
+            try {
+                SubscriptionGroupWrapper allSubscriptionGroup = mqAdminExt.getAllSubscriptionGroup(brokerData.selectBrokerAddr(), TimeUnit.MINUTES.toMillis(20));
+                subscriptionGroups.addAll(allSubscriptionGroup.getSubscriptionGroupTable().keySet());
+            } catch (Exception e) {
+                log.error("collect subscription group", e);
+            }
+        }
+
         for (String topic : topicSet) {
             if (topic.startsWith(MixAll.RETRY_GROUP_TOPIC_PREFIX) || topic.startsWith(MixAll.DLQ_GROUP_TOPIC_PREFIX)) {
                 continue;
@@ -515,7 +540,11 @@ public class MetricsCollectTask {
                 //log.warn(String.format("collectBrokerStatsTopic-topic's consumer is empty, %s", topic));
                 continue;
             }
-            for (String group : groupList.getGroupList()) {
+
+            // Filter out deprecated/removed subscription group
+            List<String> groups = groupList.getGroupList().stream().filter(subscriptionGroups::contains).collect(Collectors.toList());
+
+            for (String group : groups) {
                 for (BrokerData bd : topicRouteData.getBrokerDatas()) {
                     String masterAddr = bd.getBrokerAddrs().get(MixAll.MASTER_ID);
                     if (masterAddr != null) {
