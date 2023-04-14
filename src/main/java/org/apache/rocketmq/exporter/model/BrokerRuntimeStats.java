@@ -146,6 +146,10 @@ public class BrokerRuntimeStats {
     }
 
     private void loadTps(PutTps putTps, String value) {
+        if (value == null) {
+            return;
+        }
+
         String[] arr = value.split(" ");
         if (arr.length >= 1) {
             putTps.ten = Double.parseDouble(arr[0]);
