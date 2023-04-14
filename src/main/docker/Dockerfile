@@ -16,7 +16,7 @@
 #
 
 # FROM java:8
-FROM ibmjava:8
+FROM eclipse-temurin:8-jre
 MAINTAINER breeze
 ADD ./target/rocketmq-exporter-0.0.2-SNAPSHOT.jar quickstart.jar
 EXPOSE 5557
