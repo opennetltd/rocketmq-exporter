@@ -196,7 +196,7 @@ public class MetricsCollectTask {
         log.info("topic offset collection task finished...." + (System.currentTimeMillis() - start));
     }
 
-    @Scheduled(cron = "${task.collectProducer.cron}")
+    // @Scheduled(cron = "${task.collectProducer.cron}")
     public void collectProducer() {
         if (!rmqConfigure.isEnableCollect()) {
             return;
