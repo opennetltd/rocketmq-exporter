@@ -15,7 +15,7 @@ rocketmq:
   config:
     webTelemetryPath: /metrics
     namesrvAddr: 127.0.0.1:9876
-    rocketmqVersion: 4_9_4
+    rocketmqVersion: 4_8_0
     enableCollect: true
     enableACL: false # if >=4.4.0
     accessKey:  # if >=4.4.0
