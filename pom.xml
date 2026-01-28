@@ -99,9 +99,9 @@ under the License.
         <sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
         <gpg.useagent>true</gpg.useagent>
         <minimalMavenBuildVersion>3.6.3</minimalMavenBuildVersion>
-        <minimalJavaBuildVersion>1.8</minimalJavaBuildVersion>
-        <maven.compiler.source>${maven.compiler.target}</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <minimalJavaBuildVersion>21</minimalJavaBuildVersion>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <surefire.version>3.2.2</surefire.version><!-- for surefire, failsafe and surefire-report -->
         <maven.plugin.tools.version>3.10.2</maven.plugin.tools.version><!-- for m-plugin-p and maven-plugin-annotations -->
         <assembly.tarLongFileMode>posix</assembly.tarLongFileMode>
