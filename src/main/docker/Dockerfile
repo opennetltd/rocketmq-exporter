@@ -18,6 +18,6 @@
 # FROM java:8
 FROM eclipse-temurin:8-jre
 MAINTAINER breeze
-ADD ./target/rocketmq-exporter-0.0.2-SNAPSHOT-exec.jar quickstart.jar
+ADD rocketmq-exporter-0.0.2-SNAPSHOT-exec.jar rocketmq-exporter.jar
 EXPOSE 5557
-ENTRYPOINT ["java","-jar","quickstart.jar"]
+ENTRYPOINT ["java","-jar","rocketmq-exporter.jar"]
