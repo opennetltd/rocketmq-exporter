@@ -13,7 +13,7 @@
 > `sre-hub/templates/claude-template`, then re-run `tools/scaffold-claude.sh <alias> --sync` to
 > propagate. `validate-hub.sh` flags any local drift.
 
-<!-- SRE-HUB-XREF:START v5 (canonical — do NOT edit here; edit in sre-hub) -->
+<!-- SRE-HUB-XREF:START v6 (canonical — do NOT edit here; edit in sre-hub) -->
 ## Behavior Rules (sre-hub standard)
 
 - **Never commit or push** — leave changes unstaged; commit only when explicitly asked.
@@ -34,6 +34,7 @@ Codex, read a repo skill's `SKILL.md` directly. Cross-repo hub skills are linked
 `sre-hub/tools/link-skills.sh` into `~/.claude/skills` (+ `~/.codex/skills`) — reliable in **Claude**;
 Cursor & Codex have known skill-**symlink**-discovery bugs (cursor.com forum; openai/codex#8943), so
 don't rely on auto-trigger for the linked hub skills there — read the `SKILL.md` directly.
+- **Authoring a skill in this repo?** Follow the sre-hub skill standard (kind/owner frontmatter + `change` contract): use the `create-skill` skill or see `sre-hub/reference/skill-standard.md`.
 <!-- SRE-HUB-XREF:END -->
 
 ## What This Repo Does
