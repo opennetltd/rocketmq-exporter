@@ -13,29 +13,17 @@
 > `sre-hub/templates/claude-template`, then re-run `tools/scaffold-claude.sh <alias> --sync` to
 > propagate. `validate-hub.sh` flags any local drift.
 
-<!-- SRE-HUB-XREF:START v6 (canonical — do NOT edit here; edit in sre-hub) -->
-## Behavior Rules (sre-hub standard)
+<!-- SRE-HUB-FLOOR:START v1 -->
+## Behavior Rules
+- Never commit or push — leave changes unstaged; commit only when explicitly asked.
+- Always include a Jira ticket (e.g. SRE-1234) in every commit message / PR title.
+- Ask before assuming — unclear scope / env / CC / platform → ask, don't guess.
+- No speculative changes — only what was asked; no drive-by refactors.
 
-- **Never commit or push** — leave changes unstaged; commit only when explicitly asked.
-- **Always include a Jira ticket** (e.g. `SRE-1234`) in every commit message / PR title.
-- **Ask before assuming** — unclear scope / env / CC / platform → ask, don't guess.
-- **No speculative changes** — only what was asked; no drive-by refactors.
-- **Code beats stale docs** — when the repo's actual code / workflows contradict an ADR or doc, the code is the fact: surface the conflict and supersede the doc, don't repeat it.
-- **Shareable knowledge → repo, not memory** — reusable pitfalls, conventions, and procedures go to the canonical owner (a repo's `AGENTS.md`, a `reference/` doc, or a skill) via PR; AI auto-memory is machine-local, reserve it for personal / session context.
-- **Don't fix-and-forget** — when corrected or you learn a reusable lesson, capture it the same session and route it to its home (shareable → repo / reference / skill via PR per the rule above; personal → AI memory); a lesson left unwritten gets relearned.
-- **Load the skill before investigating** — for deploy / rollout / provisioning tasks, invoke the relevant skill first; pattern-match on the task's intent, not the presenting symptom.
-
-## Skills across tools (sre-hub standard)
-
-Repo skills live in `.claude/skills/<name>/SKILL.md` (ADR-0002). **Claude Code** auto-triggers them.
-**Cursor** also auto-discovers `.claude/skills` as a legacy-compat path (for real dirs), so a repo's own
-skills work there too. **Codex** scans only `.codex/skills` / `~/.codex/skills` (not `.claude/`) → in
-Codex, read a repo skill's `SKILL.md` directly. Cross-repo hub skills are linked by
-`sre-hub/tools/link-skills.sh` into `~/.claude/skills` (+ `~/.codex/skills`) — reliable in **Claude**;
-Cursor & Codex have known skill-**symlink**-discovery bugs (cursor.com forum; openai/codex#8943), so
-don't rely on auto-trigger for the linked hub skills there — read the `SKILL.md` directly.
-- **Authoring a skill in this repo?** Follow the sre-hub skill standard (kind/owner frontmatter + `change` contract): use the `create-skill` skill or see `sre-hub/reference/skill-standard.md`.
-<!-- SRE-HUB-XREF:END -->
+> **Full SRE standard:** when working inside the `sre-hub` workspace, read
+> `reference/entryfile-standard.md` for the complete, current behavior rules +
+> skills-across-tools guidance. Standalone (no hub): the 4 rules above are the floor.
+<!-- SRE-HUB-FLOOR:END -->
 
 ## What This Repo Does
 
